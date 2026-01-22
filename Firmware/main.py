@@ -1,13 +1,12 @@
 # You import all the IOs of your board
 import board
 
-
-
 # These are imports from the kmk library
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners.keypad import KeysScanner
 from kmk.keys import KC
-from kmk.modules.macros import Press, Release, Tap, Macros
+from kmk.modules.macros import Macros, Press, Release, Tap
+
 # This is the main instance of your keyboard
 keyboard = KMKKeyboard()
 
@@ -15,8 +14,8 @@ keyboard = KMKKeyboard()
 macros = Macros()
 keyboard.modules.append(macros)
 
-# Define your pins here!
-PINS = [board.D6, board.D7, board.D0, board.D3, board.D4, board.D2, board.D1]
+# RP2040 (XIAO RP2040) GPIO pins (GP6, GP7, GP0, GP3, GP2, GP4, GP1)
+PINS = [board.GP6, board.GP7, board.GP0, board.GP3, board.GP2, board.GP4, board.GP1]
 
 # Tell kmk we are not using a key matrix
 keyboard.matrix = KeysScanner(
@@ -24,17 +23,11 @@ keyboard.matrix = KeysScanner(
     value_when_pressed=False,
 )
 
-# Here you define the buttons corresponding to the pins
-KC.MACRO(
-    on_press=None,
-    on_hold=None,
-    on_release=None,
-    blocking=True,
-)
-# Look here for keycodes: https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/keycodes.md
-# And here for macros: https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/macros.md
+# Define an Alt+F4 macro and map it to all 7 keys
+alt_f4 = KC.MACRO(Tap(KC.ALT, KC.F4))
+
 keyboard.keymap = [
-    [KC.A, KC.DELETE, KC.MACRO("Hello world!"), KC.Macro(Press(KC.LCMD), Tap(KC.S), Release(KC.LCMD)),]
+    [alt_f4, alt_f4, alt_f4, alt_f4, alt_f4, alt_f4, alt_f4]
 ]
 
 # Start kmk!
