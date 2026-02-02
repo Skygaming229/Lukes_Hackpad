@@ -1,11 +1,26 @@
 # You import all the IOs of your board
 import board
 
+# LED setup: try common APIs and fall back silently if unavailable
+try:
+    from machine import Pin
+    led = Pin(3, Pin.OUT)
+    led.value = True
+except Exception:
+    try:
+        import digitalio
+        led = digitalio.DigitalInOut(board.LED)
+        led.direction = digitalio.Direction.OUTPUT
+        led.value = True
+    except Exception:
+        led = None
+
 # These are imports from the kmk library
+from machine import Pin
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners.keypad import KeysScanner
 from kmk.keys import KC
-from kmk.modules.macros import Macros, Press, Release, Tap
+from kmk.modules.macros import Press, Release, Tap, Macros, Delay
 
 # This is the main instance of your keyboard
 keyboard = KMKKeyboard()
@@ -14,8 +29,8 @@ keyboard = KMKKeyboard()
 macros = Macros()
 keyboard.modules.append(macros)
 
-# RP2040 (XIAO RP2040) GPIO pins (GP6, GP7, GP0, GP3, GP2, GP4, GP1)
-PINS = [board.GP6, board.GP7, board.GP0, board.GP3, board.GP2, board.GP4, board.GP1]
+# Define your pins here!
+PINS = [board.D10, board.D5, board.D6, board.D9,board.D8, board.D7]
 
 # Tell kmk we are not using a key matrix
 keyboard.matrix = KeysScanner(
@@ -23,11 +38,32 @@ keyboard.matrix = KeysScanner(
     value_when_pressed=False,
 )
 
-# Define an Alt+F4 macro and map it to all 7 keys
-alt_f4 = KC.MACRO(Tap(KC.ALT, KC.F4))
+NEXT = KC.MACRO(
+    Press(KC.LALT),
+    Delay(30),
+    Tap(KC.TAB),
+    Delay(30),
+    Release(KC.LALT),
+)
 
+ALTF4 = KC.MACRO(
+    Press(KC.LALT),
+    Delay(30),
+    Tap(KC.F4),
+    Delay(30),
+    Release(KC.LALT),
+)
+
+# Here you define the buttons corresponding to the pins
+# Look here for keycodes: https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/keycodes.md
+# And here for macros: https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/macros.md
 keyboard.keymap = [
-    [alt_f4, alt_f4, alt_f4, alt_f4, alt_f4, alt_f4, alt_f4]
+    [
+        NEXT,
+        ALTF4,
+        KC.MACRO("Hello world!"),
+        KC.MACRO(Press(KC.LCMD), Tap(KC.S), Release(KC.LCMD)),
+    ],
 ]
 
 # Start kmk!
