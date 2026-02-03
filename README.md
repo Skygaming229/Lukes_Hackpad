@@ -1,4 +1,5 @@
 <img width="1460" height="892" alt="image" src="https://github.com/user-attachments/assets/362c9039-0d79-496c-a529-b3fe4726828b" />
+![Endprodukt](https://github.com/user-attachments/assets/1b28c5aa-58ae-47e0-a7e9-a74ef96886ce)
 
 Inspiration
 - I wanted to create a macropad that allowed me to work more efficiently. I created a macropad using 6 switches, 1 rp2040, and 2 leds.
